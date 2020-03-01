@@ -12,7 +12,7 @@ node* create()
     node *head;
 
     head = (node*)malloc(sizeof(node));
-    printf("Enter element -> ");
+    printf("Enter element to be inserted -> ");
     scanf("%d",&(head->data));
     head->next = NULL;
 
@@ -24,22 +24,22 @@ node* create()
     return(head);
 }
 
-void insertBegin(node *head)
+void insertBegin(node **head)
 {
     node *ptr;
 
-    if(head == NULL)
+    if(*head == NULL)
     {
         printf("SLL does not Exist.\n");
         return;
     }
 
     ptr = (node*)malloc(sizeof(node));
-    printf("Enter element -> ");
+    printf("Enter element to be inserted -> ");
     scanf("%d",&(ptr->data));
-    ptr->next = head;
+    ptr->next = *head;
 
-    head = ptr;
+    *head = ptr;
 
     printf("Element Inserted\n");
 }
@@ -56,7 +56,7 @@ void insertEnd(node *head)
 
     temp = head;
     ptr = (node*)malloc(sizeof(node));
-    printf("Enter element -> ");
+    printf("Enter element to be inserted -> ");
     scanf("%d",&(ptr->data));
 
     while(temp->next != NULL)
@@ -69,9 +69,9 @@ void insertEnd(node *head)
 
 }
 
-void insertBefore(node *head,int ele)
+void insertBefore(node **head,int ele)
 {
-    node *temp, *ptr;
+    node *temp,*temp1,*temp2, *ptr;
 
     if(head == NULL)
     {
@@ -79,22 +79,40 @@ void insertBefore(node *head,int ele)
         return;
     }
 
-    temp=head;
-    ptr = (node*)malloc(sizeof(node));
-    printf("Enter element -> ");
-    scanf("%d",&(ptr->data));
+    temp = *head;
 
-    while(temp->next->data != ele && temp != NULL)
-        temp=temp->next;
+    if(temp->data == ele)
+    {
+        ptr = (node*)malloc(sizeof(node));
+        printf("Enter element to be inserted -> ");
+        scanf("%d",&(ptr->data));
 
-    if(temp == NULL)
+        ptr->next = temp;
+        *head = ptr;
+
+        return;
+    }
+
+    temp1 = temp;
+
+    while(temp1->data != ele && temp1->next != NULL)
+    {
+        temp2 = temp1;
+        temp1 = temp1->next;
+    }
+
+    if(temp1->data != ele)
     {
         printf("Element not found\n");
         return;
     }
 
-    ptr->next = temp->next;
-    temp->next = ptr;
+    ptr = (node*)malloc(sizeof(node));
+    printf("Enter element to be inserted -> ");
+    scanf("%d",&(ptr->data));
+
+    ptr->next = temp1;
+    temp2->next = ptr;
 
     printf("Element Inserted\n");
 }
@@ -110,18 +128,19 @@ void insertAfter(node *head,int ele)
     }
 
     temp=head;
-    ptr = (node*)malloc(sizeof(node));
-    printf("Enter element -> ");
-    scanf("%d",&(ptr->data));
 
-    while(temp->data != ele && temp != NULL)
+    while(temp->data != ele && temp->next != NULL)
         temp=temp->next;
 
-    if(temp == NULL)
+    if(temp->data != ele)
     {
         printf("Element not found\n");
         return;
     }
+
+    ptr = (node*)malloc(sizeof(node));
+    printf("Enter element to be inserted -> ");
+    scanf("%d",&(ptr->data));
 
     ptr->next = temp->next;
     temp->next = ptr;
@@ -129,19 +148,20 @@ void insertAfter(node *head,int ele)
     printf("Element Inserted\n");
 }
 
-void deleteHead(node *head)
+void deleteHead(node **head)
 {
     node *temp;
 
-    if(head == NULL)
+    if(*head == NULL)
     {
         printf("SLL does not Exist.\n");
         return;
     }
 
-    temp = head;
-    head = head->next;
+    temp = *head;
+    *head = temp->next;
     free(temp);
+    printf("Element deleted\n");
 }
 
 void deleteEnd(node *head)
@@ -163,34 +183,36 @@ void deleteEnd(node *head)
     free(temp2);
 
     temp1->next = NULL;
+    printf("Element deleted\n");
 }
 
-void deleteElement(node *head, int ele)
+void deleteElement(node **head, int ele)
 {
     node *temp1,*temp2;
 
-    if(head == NULL)
+    if(*head == NULL)
     {
         printf("SLL does not Exist.\n");
         return;
     }
 
-    temp1 = head;
+    temp1 = *head;
 
-    if(head->data == ele)
+    if(temp1->data == ele)
     {
-        head = head->next;
+        *head = temp1->next;
         free(temp1);
         return;
     }
 
-    while(temp1->data != ele && temp1 != NULL)
+    while(temp1->data != ele && temp1->next != NULL)
     {
+
         temp2 = temp1;
         temp1 = temp1->next;
     }
 
-    if(temp1 == NULL)
+    if(temp1->data != ele)
     {
         printf("Element not found\n");
         return;
@@ -198,6 +220,7 @@ void deleteElement(node *head, int ele)
 
     temp2->next =temp1->next;
     free(temp1);
+    printf("Element deleted\n");
 
 }
 
@@ -214,13 +237,13 @@ void searchElement(node *head,int ele)
 
     temp = head;
 
-    while(temp->data != ele)
+    while(temp->data != ele && temp->next != NULL)
     {
         temp = temp->next;
         i++;
     }
 
-    if(temp == NULL)
+    if(temp->data != ele)
     {
         printf("Element not found\n");
         return;
@@ -245,16 +268,11 @@ void reverseSLL(node **head)
 
     while(cur != NULL)
     {
-        //printf("%d %d %d\n",prev->data,cur->data,next->data);
-
         next =  cur->next;
         cur->next = prev;
         prev = cur;
         cur = next;
-
     }
-
-    //printf("%d %d %d\n",prev->data,cur->data,next->data);
 
     *head = prev;
 
@@ -308,7 +326,7 @@ int main(int argc, char const *argv[])
                     break;
 
             case 2: system("clear");
-                    insertBegin(head);
+                    insertBegin(&head);
                     break;
 
             case 3: system("clear");
@@ -316,36 +334,33 @@ int main(int argc, char const *argv[])
                     break;
 
             case 4: system("clear");
-                    printf("Insert Element -> ");
+                    printf("Insert Reference Element -> ");
                     scanf("%d",&ele);
-                    insertBefore(head,ele);
+                    insertBefore(&head,ele);
                     break;
 
             case 5: system("clear");
-                    printf("Insert Element -> ");
+                    printf("Insert Reference Element -> ");
                     scanf("%d",&ele);
                     insertAfter(head,ele);
                     break;
 
             case 6: system("clear");
-                    deleteHead(head);
-                    printf("Element deleted\n");
+                    deleteHead(&head);
                     break;
 
             case 7: system("clear");
                     deleteEnd(head);
-                    printf("Element deleted\n");
                     break;
 
             case 8: system("clear");
                     printf("Enter Element to be deleted -> ");
                     scanf("%d",&ele);
-                    deleteElement(head,ele);
-                    printf("Element deleted\n");
+                    deleteElement(&head,ele);
                     break;
 
             case 9: system("clear");
-                    printf("Enter Element to be deleted -> ");
+                    printf("Enter Element to be searched -> ");
                     scanf("%d",&ele);
                     searchElement(head,ele);
                     printf("Search Complete\n");
@@ -362,12 +377,11 @@ int main(int argc, char const *argv[])
 
             case 12: break;
 
-            default: printf("Invalid Input");
+            default: system("clear");
+                     printf("Invalid Input\n");
                      break;
 
         }
-
-        scanf("%d",&ch);
 
     } while(ch != 12);
 
