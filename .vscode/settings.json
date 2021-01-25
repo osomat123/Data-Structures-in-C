@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "queue.C": "cpp",
+        "queueArray.C": "cpp",
+        "linkedList.C": "cpp",
+        "circularSLL.C": "cpp",
+        "queueLinkedList.C": "cpp",
+        "circularDLL.C": "cpp",
+        "stackLinkedList.C": "cpp",
+        "infixToPostfix.C": "cpp"
+    }
+}
