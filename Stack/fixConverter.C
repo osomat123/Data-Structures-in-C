@@ -1,5 +1,8 @@
+// Program to convert infix expression to postfix and prefix using stacks
+
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct stack
 {
@@ -97,26 +100,23 @@ int isOperand(char ch)
     return (ch >= 'a' && ch <='z') || (ch >= 'A' && ch <='Z') || (ch == ' ') || (ch == '\t');
 }
 
-
-int main()
+char *getPostfix(char *exp)
 {
-    printf("Enter infix expression -> ");
-    char *exp = getUserInput();
     char token, stack_ele;
-    node *temp;
+    char *postfix = (char *) malloc(sizeof(char) * (strlen(exp) + 1));
+    int i = 0;
 
-    printf("Postfix -> ");
     while(*exp)
     {
         if(isOperand(*exp))
         {
-            printf("%c", *exp);
+            postfix[i++] = *exp;
         }
 
         else if(*exp == ')')
         {
             while((token = pop()) != '(')
-                printf("%c", token);
+                postfix[i++] = token;
         }
 
         else
@@ -125,7 +125,7 @@ int main()
             while(!canPush(*exp, stack_ele))
             {
                 token = pop();
-                printf("%c",token);
+                postfix[i++] = token;
                 stack_ele = top ? top->data : '~';
             }
             push(*exp);
@@ -137,8 +137,71 @@ int main()
     while(top)
     {
         token = pop();
-        printf("%c", token);
+        postfix[i++] = token;
     }
-    printf("\n");
+    postfix[i] = '\0';
+
+    return postfix;
+}
+
+char *reverse(char *exp)
+{
+    int i,j;
+    i = 0;
+    j = strlen(exp) - 1;
+    char temp;
+
+    while(i < j)
+    {
+         
+        temp = exp[i];
+        exp[i] = exp[j];
+        exp[j] = temp;
+
+        i++;
+        j--;
+    }
+
+    return exp;
+}
+
+char *getPrefix(char *exp)
+{
+    char *intermediate = (char *) malloc(sizeof(char) * (strlen(exp) + 1));
+    char *prefix;
+    int i = 0;
+
+    // Get infix into proper form 
+    intermediate = reverse(exp);
+    while(intermediate[i])
+    {
+        if(intermediate[i] == '(')
+            intermediate[i] = ')';
+
+        else if(intermediate[i] == ')')
+            intermediate[i] = '(';
+
+        i++;
+    }
+
+    prefix = reverse(getPostfix(intermediate));
+
+    return prefix;
+}
+
+int main()
+{
+    char *prefix, *postfix;
+
+    printf("\n\t\tFix Converter\n\n");
+    printf("Enter infix expression -> ");
+    char *exp = getUserInput();
+
+    postfix = getPostfix(exp);
+    prefix = getPrefix(exp);
+    
+    printf("Postfix -> %s\n", postfix);
+    printf("Prefix -> %s\n\n", prefix);
+
     return(0);
 }
