@@ -8,6 +8,7 @@
         "circularDLL.C": "cpp",
         "stackLinkedList.C": "cpp",
         "infixToPostfix.C": "cpp",
-        "fixConverter.C": "cpp"
+        "fixConverter.C": "cpp",
+        "queueTwoStacks.C": "cpp"
     }
 }
