@@ -102,8 +102,7 @@ int main()
         printf("\nPress any key to continue...\n");
         getchar();
         getchar();
-
-    } while(ch != 5);
+    } while(ch != 3);
 
     return(0);
 
